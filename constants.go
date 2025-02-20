@@ -5,4 +5,5 @@ const (
 	DefaultRendezvousString = "clipboard"
 	DefaultProtocolID       = "/peerclip/v1"
 	DefaultKeepHistory      = 30
+	MessageDelim            = '\n'
 )

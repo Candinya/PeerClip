@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"context"
+	"encoding/binary"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.design/x/clipboard"
@@ -11,9 +13,21 @@ import (
 
 var history [][]byte
 
+// Refer to https://stackoverflow.com/questions/74326022/go-libp2p-receiving-bytes-from-stream
+
 func setClipboardFromRemote(ctx context.Context, r io.Reader) {
 	for {
-		b, err := io.ReadAll(r)
+		buf := bufio.NewReader(r)
+		header, err := buf.ReadBytes(MessageDelim)
+		if err != nil {
+			runtime.LogErrorf(ctx, "Failed to read header: %v", err)
+			return
+		}
+
+		length := binary.BigEndian.Uint64(header)
+
+		payload := make([]byte, length)
+		n, err := io.ReadFull(buf, payload)
 		if err != nil {
 			runtime.LogWarningf(ctx, "Error reading from buffer: %v", err)
 			//panic(err)
@@ -41,8 +55,22 @@ func getChangeFromClipboard(ctx context.Context, w io.Writer) {
 
 	for data := range ch {
 		runtime.LogDebugf(ctx, "clipboard change: %s", data)
+		// Write data to stream
+		header := make([]byte, 8)
+		binary.BigEndian.PutUint64(header, uint64(len(data))) // Refer to https://go.dev/play/p/pt4cUAcH3Vt
+		_, err := w.Write(header)
 		if err != nil {
-			runtime.LogWarningf(ctx, "Error writing to buffer: %v", err)
+			runtime.LogWarningf(ctx, "Error writing header: %v", err)
+			continue
+		}
+		_, err = w.Write([]byte{MessageDelim})
+		if err != nil {
+			runtime.LogWarningf(ctx, "Error writing splitter: %v", err)
+			continue
+		}
+		_, err = w.Write(data)
+		if err != nil {
+			runtime.LogWarningf(ctx, "Error writing payload: %v", err)
 			//panic(err)
 			break
 		}
