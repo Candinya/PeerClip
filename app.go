@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.design/x/clipboard"
-	"log"
 )
 
 // App struct
@@ -21,14 +21,14 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startupWithCfg(cfg *config) func(ctx context.Context) {
 
-	// Prepare clipboard
-	err := clipboard.Init()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	return func(ctx context.Context) {
 		a.ctx = ctx
+
+		// Prepare clipboard
+		err := clipboard.Init()
+		if err != nil {
+			runtime.LogFatalf(ctx, "Failed to init clipboard: %v", err)
+		}
 
 		// Prepare libp2p
 		initLibP2P(ctx, cfg)

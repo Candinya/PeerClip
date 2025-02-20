@@ -9,7 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/multiformats/go-multiaddr"
-	"log"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // Refer to https://github.com/libp2p/go-libp2p/tree/master/examples/chat-with-mdns
@@ -18,7 +18,7 @@ func initLibP2P(ctx context.Context, cfg *config) {
 	// Initialize key pair
 	privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		log.Fatal(err)
+		runtime.LogFatalf(ctx, "Failed to init key pair: %v", err)
 	}
 
 	// Start mDNS auto-discover server
@@ -30,16 +30,16 @@ func initLibP2P(ctx context.Context, cfg *config) {
 		libp2p.Identity(privKey),
 	)
 	if err != nil {
-		log.Fatal(err)
+		runtime.LogFatalf(ctx, "Failed to contruct libp2p host: %v", err)
 	}
 
-	log.Printf("[*] Listening on: %s with port: %d\n", cfg.listenHost, cfg.listenPort)
-	log.Printf("[*] Your Multiaddress Is: /ip4/%s/tcp/%v/p2p/%s\n", cfg.listenHost, cfg.listenPort, h.ID())
+	runtime.LogInfof(ctx, "Listening on: %s with port: %d", cfg.listenHost, cfg.listenPort)
+	runtime.LogInfof(ctx, "Your Multiaddress Is: /ip4/%s/tcp/%v/p2p/%s", cfg.listenHost, cfg.listenPort, h.ID())
 
 	// Set a function as stream handler
 	// This function is called when a peer initiates a connection and starts a stream with this peer
 	h.SetStreamHandler(protocol.ID(cfg.protocolID), func(stream network.Stream) {
-		log.Println("Got a new stream!")
+		runtime.LogDebugf(ctx, "Got a new stream!")
 		streamClipboard(ctx, stream)
 		// 'stream' will stay open until you close it (or the other side closes it).
 	})
@@ -52,13 +52,13 @@ func initLibP2P(ctx context.Context, cfg *config) {
 			peer := <-peerChan // will block until we discover a peer
 			if peer.ID > h.ID() {
 				// if other end peer id greater than us, don't connect to it, just wait for it to connect us
-				log.Println("Found peer:", peer, " id is greater than us, wait for it to connect to us")
+				runtime.LogDebugf(ctx, "Found peer: %v, id is greater than us, wait for it to connect to us", peer)
 				continue
 			}
-			log.Println("Found peer:", peer, ", connecting")
+			runtime.LogDebugf(ctx, "Found peer: %v, connecting", peer)
 
 			if err := h.Connect(ctx, peer); err != nil {
-				log.Println("Connection failed:", err)
+				runtime.LogWarningf(ctx, "Connection failed: %v", err)
 				continue
 			}
 
@@ -66,9 +66,9 @@ func initLibP2P(ctx context.Context, cfg *config) {
 			stream, err := h.NewStream(ctx, peer.ID, protocol.ID(cfg.protocolID))
 
 			if err != nil {
-				log.Println("Stream open failed", err)
+				runtime.LogErrorf(ctx, "Stream open failed: %v", err)
 			} else {
-				log.Println("Connected to:", peer)
+				runtime.LogInfof(ctx, "Connected to: %v", peer)
 				streamClipboard(ctx, stream)
 			}
 		}
