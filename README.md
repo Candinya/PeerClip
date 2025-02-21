@@ -1,19 +1,17 @@
-# README
+# PeerClip
 
-## About
+## 关于
 
-This is the official Wails React-TS template.
+这是一个剪贴板管理小工具，带有 p2p 发现与同步和简易的历史管理功能。为确保正常使用，请允许应用通过防火墙（如果系统出现提示的话）。
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+主要是拿来写 Wails 练手用的，有什么新的想法或是改进思路欢迎随时开启 issue / PR 。
 
-## Live Development
+## 待办
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+- [ ] 显示连接数（现在有点不太稳定，有连接数就能方便检查状态了）
 
-## Building
+## 技术栈
 
-To build a redistributable, production mode package, use `wails build`.
+- P2P 发现与通讯： libp2p
+- 应用打包构建： Wails
+- 前端开发： React 与 TailwindCSS
