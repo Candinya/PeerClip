@@ -30,6 +30,9 @@ func (a *App) startupWithCfg(cfg *config) func(ctx context.Context) {
 			runtime.LogFatalf(ctx, "Failed to init clipboard: %v", err)
 		}
 
+		// Watch clipboard change event to push to frontend
+		go emitClipboardChangeEvent(ctx)
+
 		// Prepare libp2p
 		initLibP2P(ctx, cfg)
 	}

@@ -11,8 +11,6 @@ import (
 	"io"
 )
 
-var history [][]byte
-
 // Refer to https://stackoverflow.com/questions/74326022/go-libp2p-receiving-bytes-from-stream
 
 func setClipboardFromRemote(ctx context.Context, r io.Reader) {
@@ -41,11 +39,6 @@ func setClipboardFromRemote(ctx context.Context, r io.Reader) {
 			runtime.LogDebugf(ctx, "clipboard data is different, updating")
 			// Only update when is different
 			clipboard.Write(clipboard.FmtText, payload)
-			history = append(history, currentBytes)
-			if len(history) >= DefaultKeepHistory {
-				// Remove first
-				history = history[1:]
-			}
 		}
 	}
 }
@@ -80,4 +73,12 @@ func getChangeFromClipboard(ctx context.Context, w io.Writer) {
 func streamClipboard(ctx context.Context, stream network.Stream) {
 	go getChangeFromClipboard(ctx, stream)
 	go setClipboardFromRemote(ctx, stream)
+}
+
+func emitClipboardChangeEvent(ctx context.Context) {
+	ch := clipboard.Watch(ctx, clipboard.FmtText)
+
+	for data := range ch {
+		runtime.EventsEmit(ctx, "clipboard-change", string(data))
+	}
 }
