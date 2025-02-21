@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.design/x/clipboard"
 )
@@ -38,7 +37,6 @@ func (a *App) startupWithCfg(cfg *config) func(ctx context.Context) {
 	}
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+func (a *App) SetClipboard(text string) {
+	clipboard.Write(clipboard.FmtText, []byte(text))
 }

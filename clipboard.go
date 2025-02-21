@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/md5"
 	"encoding/binary"
+	"encoding/hex"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.design/x/clipboard"
@@ -79,6 +81,9 @@ func emitClipboardChangeEvent(ctx context.Context) {
 	ch := clipboard.Watch(ctx, clipboard.FmtText)
 
 	for data := range ch {
-		runtime.EventsEmit(ctx, "clipboard-change", string(data))
+		// Calc hash of data as unique id
+		h := md5.New()
+		h.Write(data)
+		runtime.EventsEmit(ctx, "clipboard-change", hex.EncodeToString(h.Sum(nil)), string(data))
 	}
 }
