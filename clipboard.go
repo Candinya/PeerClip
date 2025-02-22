@@ -5,12 +5,12 @@ import (
 	"bytes"
 	"context"
 	"crypto/md5"
-	"encoding/binary"
 	"encoding/hex"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.design/x/clipboard"
 	"io"
+	"strconv"
 )
 
 // Refer to https://stackoverflow.com/questions/74326022/go-libp2p-receiving-bytes-from-stream
@@ -24,7 +24,14 @@ func setClipboardFromRemote(ctx context.Context, r io.Reader) {
 			break
 		}
 
-		length := binary.BigEndian.Uint64(header)
+		lengthStr := string(header[:len(header)-1]) // Minus 1 to get rid of the delim suffix
+		runtime.LogDebugf(ctx, "clipboard header arrive: %s", lengthStr)
+
+		length, err := strconv.ParseInt(lengthStr, HeaderEncodingBase, 64)
+		if err != nil {
+			runtime.LogErrorf(ctx, "Failed to parse length: %v", err)
+			break
+		}
 
 		payload := make([]byte, length)
 		n, err := io.ReadFull(buf, payload)
@@ -50,8 +57,7 @@ func getChangeFromClipboard(ctx context.Context, w io.Writer) {
 	for data := range ch {
 		runtime.LogDebugf(ctx, "clipboard change: %s", data)
 		// Write data to stream
-		header := make([]byte, 8)
-		binary.BigEndian.PutUint64(header, uint64(len(data))) // Refer to https://go.dev/play/p/pt4cUAcH3Vt
+		header := []byte(strconv.FormatInt(int64(len(data)), HeaderEncodingBase))
 		_, err := w.Write(header)
 		if err != nil {
 			runtime.LogWarningf(ctx, "Error writing header: %v", err)
