@@ -9,5 +9,10 @@
   "author": {
     "name": "Nya Candy",
     "email": "dev@candinya.com"
+  },
+  "info": {
+    "productVersion": "0.1.0",
+    "copyright": "Copyright 2025 Nya Candy. All rights reserved.",
+    "comments": "A small P2P Clipboard"
   }
 }
