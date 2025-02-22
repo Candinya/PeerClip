@@ -61,7 +61,7 @@ const LongPressButton = ({
 
   return (
     <button
-      className="bg-red-300/60 dark:bg-red-800/30 hover:bg-red-300/75 dark:hover:bg-red-800/45 transition-colors duration-200 text-red-500 py-2 rounded-lg w-full cursor-pointer relative overflow-clip"
+      className="bg-red-300/60 dark:bg-red-800/30 hover:bg-red-300/75 dark:hover:bg-red-800/45 transition-colors duration-200 text-red-500 px-4 py-2 rounded-lg grow cursor-pointer relative overflow-clip"
       onMouseDown={startTiming}
       onMouseUp={stopTiming}
       onMouseLeave={stopTiming}

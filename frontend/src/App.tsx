@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useAtomCallback } from "jotai/utils";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import {
+  ListBulletIcon,
+  ShareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 
 import { SetClipboard } from "../wailsjs/go/main/App";
 import { EventsOn, EventsOff } from "../wailsjs/runtime";
@@ -10,10 +14,12 @@ import { clipboardHistoryAtom } from "./atoms/clipboardHistory";
 import type { ClipboardHistory } from "./atoms/clipboardHistory";
 import HistoryCard from "./components/HistoryCard";
 import LongPressButton from "./components/LongPressButton";
+import { AnimateNumber } from "motion-number";
 
 function App() {
   const [clipboardHistory, setClipboardHistory] = useAtom(clipboardHistoryAtom);
   const [currentActiveHash, setCurrentActiveHash] = useState("");
+  const [peersCount, setPeersCount] = useState(0);
 
   const getCurrentHistory = useAtomCallback(
     useCallback((get) => {
@@ -39,8 +45,12 @@ function App() {
       setCurrentActiveHash(hash);
     });
 
+    EventsOn("peers-count", (count: number) => {
+      setPeersCount(count);
+    });
+
     return () => {
-      EventsOff("clipboard-change");
+      EventsOff("clipboard-change", "peers-count");
     };
   }, []);
 
@@ -85,11 +95,27 @@ function App() {
         </ul>
       </div>
 
-      {/*Purge button*/}
-      <div className="px-4 py-2 md:px-8 md:py-4 w-full max-w-7xl mx-auto">
+      <div className="px-4 py-2 md:px-8 md:py-4 w-full max-w-7xl mx-auto flex flex-row gap-2">
+        {/*History count*/}
+        <div className="bg-amber-300/60 dark:bg-amber-800/30 text-amber-500 px-3 py-1 rounded-lg flex flex-row gap-1.5 items-center">
+          <ListBulletIcon className="size-4" />
+          <AnimateNumber className="font-semibold text-sm">
+            {clipboardHistory.length}
+          </AnimateNumber>
+        </div>
+
+        {/*Purge button*/}
         <LongPressButton onTrigger={purgeHistory} time={2_000}>
           <TrashIcon className="size-6 mx-auto" />
         </LongPressButton>
+
+        {/*Peers count*/}
+        <div className="bg-green-300/60 dark:bg-green-800/30 text-green-500 px-3 py-1 rounded-lg flex flex-row gap-1.5 items-center">
+          <ShareIcon className="size-4" />
+          <AnimateNumber className="font-semibold text-sm">
+            {peersCount}
+          </AnimateNumber>
+        </div>
       </div>
     </div>
   );

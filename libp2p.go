@@ -10,6 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"time"
 )
 
 // Refer to https://github.com/libp2p/go-libp2p/tree/master/examples/chat-with-mdns
@@ -70,6 +71,20 @@ func initLibP2P(ctx context.Context, cfg *config) {
 			} else {
 				runtime.LogInfof(ctx, "Connected to: %v", peer)
 				streamClipboard(ctx, stream)
+
+				// New connection start
+				runtime.EventsEmit(ctx, "peers-count", len(h.Network().Peers()))
+			}
+		}
+	}()
+
+	// Update peers count periodically // TODO: find a better way
+	go func() {
+		t := time.NewTicker(PeersCountUpdateInterval)
+		for {
+			select {
+			case <-t.C:
+				runtime.EventsEmit(ctx, "peers-count", len(h.Network().Peers()))
 			}
 		}
 	}()
