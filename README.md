@@ -16,3 +16,7 @@
 - P2P 发现与通讯： libp2p
 - 应用打包构建： Wails
 - 前端开发： React 与 TailwindCSS
+
+
+
+&copy; 2025 Nya Candy 版权所有
