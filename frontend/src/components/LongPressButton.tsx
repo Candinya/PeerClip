@@ -14,7 +14,7 @@ const LongPressButton = ({
   progressClassName,
 }: LongPressButtonProps) => {
   const startTsRef = useRef<number>(-1);
-  const processBarRef = useRef<HTMLDivElement>(null);
+  const processBarRef = useRef<HTMLDivElement | null>(null);
 
   const timingFunc = () => {
     if (startTsRef.current === -1) {
