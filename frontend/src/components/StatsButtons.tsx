@@ -27,12 +27,19 @@ const StatsButtons = ({
     </div>
 
     {/*Purge button*/}
-    <LongPressButton onTrigger={purgeHistory} time={2_000}>
+    <LongPressButton
+      onTrigger={purgeHistory}
+      time={2_000}
+      basicClassName={
+        "bg-red-300/60 dark:bg-red-800/30 hover:bg-red-300/75 dark:hover:bg-red-800/45 text-red-500"
+      }
+      progressClassName={"bg-red-500"}
+    >
       <TrashIcon className="size-6 mx-auto" />
     </LongPressButton>
 
     {/*Peers count*/}
-    <div className="bg-green-300/60 dark:bg-green-800/30 text-green-500 px-3 py-1 rounded-lg flex flex-row gap-1.5 items-center">
+    <div className="bg-sky-300/60 dark:bg-sky-800/30 text-sky-500 px-3 py-1 rounded-lg flex flex-row gap-1.5 items-center">
       <ShareIcon className="size-4" />
       <AnimateNumber className="font-semibold text-sm">
         {peersCount}

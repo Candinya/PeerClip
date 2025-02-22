@@ -3,11 +3,15 @@ import { PropsWithChildren, useRef } from "react";
 interface LongPressButtonProps extends PropsWithChildren {
   onTrigger: () => void;
   time: number;
+  basicClassName: string;
+  progressClassName: string;
 }
 const LongPressButton = ({
   onTrigger,
   time,
   children,
+  basicClassName,
+  progressClassName,
 }: LongPressButtonProps) => {
   const startTsRef = useRef<number>(-1);
   const processBarRef = useRef<HTMLDivElement>(null);
@@ -61,15 +65,19 @@ const LongPressButton = ({
 
   return (
     <button
-      className="bg-red-300/60 dark:bg-red-800/30 hover:bg-red-300/75 dark:hover:bg-red-800/45 transition-colors duration-200 text-red-500 px-4 py-2 rounded-lg grow cursor-pointer relative overflow-clip"
+      className={`transition-colors duration-200 px-4 py-2 rounded-lg grow cursor-pointer relative overflow-clip ${
+        basicClassName
+      }`}
       onMouseDown={startTiming}
       onMouseUp={stopTiming}
       onMouseLeave={stopTiming}
     >
       <div
         ref={processBarRef}
-        className="absolute top-0 left-0 h-full transition-all bg-red-500"
-      ></div>
+        className={`absolute top-0 left-0 h-full transition-all ${
+          progressClassName
+        }`}
+      />
       {children}
     </button>
   );
