@@ -39,7 +39,7 @@ const StatsButtons = ({
     </LongPressButton>
 
     {/*Peers count*/}
-    <div className="bg-sky-300/60 dark:bg-sky-800/30 text-sky-500 px-3 py-1 rounded-lg flex flex-row gap-1.5 items-center">
+    <div className="bg-emerald-300/60 dark:bg-emerald-800/30 text-emerald-500 px-3 py-1 rounded-lg flex flex-row gap-1.5 items-center">
       <ShareIcon className="size-4" />
       <AnimateNumber className="font-semibold text-sm">
         {peersCount}
