@@ -4,7 +4,6 @@ interface HistoryCardProps {
   h: ClipboardHistory;
   isActive: boolean;
   setActive: (h: ClipboardHistory) => void;
-  del: (hash: string) => void;
 }
 const HistoryCard = ({ h, isActive, setActive }: HistoryCardProps) => (
   <li

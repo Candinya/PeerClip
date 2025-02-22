@@ -1,20 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useAtomCallback } from "jotai/utils";
-import {
-  ListBulletIcon,
-  ShareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 
 import { SetClipboard } from "../wailsjs/go/main/App";
 import { EventsOn, EventsOff } from "../wailsjs/runtime";
 
 import { clipboardHistoryAtom } from "./atoms/clipboardHistory";
 import type { ClipboardHistory } from "./atoms/clipboardHistory";
-import HistoryCard from "./components/HistoryCard";
-import LongPressButton from "./components/LongPressButton";
-import { AnimateNumber } from "motion-number";
+import HistoryList from "./components/HistoryList";
+import StatsButtons from "./components/StatsButtons";
 
 function App() {
   const [clipboardHistory, setClipboardHistory] = useAtom(clipboardHistoryAtom);
@@ -60,17 +54,6 @@ function App() {
     }
   };
 
-  const deleteHistory = (hash: string) => {
-    if (hash === currentActiveHash) {
-      // Ignore
-      return;
-    }
-    const hIndex = clipboardHistory.findIndex((h) => h.hash === hash);
-    if (hIndex > -1) {
-      setClipboardHistory(clipboardHistory.splice(hIndex, 1));
-    }
-  };
-
   const purgeHistory = () => {
     const currentActive = clipboardHistory.find(
       (h) => h.hash === currentActiveHash,
@@ -82,40 +65,20 @@ function App() {
     <div className="h-full bg-gray-100 dark:bg-gray-900 text-black dark:text-white flex flex-col">
       {/*History list*/}
       <div className="grow h-0 overflow-y-auto p-4 pb-2">
-        <ul className="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl gap-4">
-          {clipboardHistory.map((h) => (
-            <HistoryCard
-              key={h.hash}
-              h={h}
-              isActive={currentActiveHash === h.hash}
-              setActive={setActive}
-              del={deleteHistory}
-            />
-          ))}
-        </ul>
+        <HistoryList
+          clipboardHistory={clipboardHistory}
+          currentActiveHash={currentActiveHash}
+          setActive={setActive}
+        />
       </div>
 
+      {/*Stats & Buttons*/}
       <div className="px-4 py-2 md:px-8 md:py-4 w-full max-w-7xl mx-auto flex flex-row gap-2">
-        {/*History count*/}
-        <div className="bg-amber-300/60 dark:bg-amber-800/30 text-amber-500 px-3 py-1 rounded-lg flex flex-row gap-1.5 items-center">
-          <ListBulletIcon className="size-4" />
-          <AnimateNumber className="font-semibold text-sm">
-            {clipboardHistory.length}
-          </AnimateNumber>
-        </div>
-
-        {/*Purge button*/}
-        <LongPressButton onTrigger={purgeHistory} time={2_000}>
-          <TrashIcon className="size-6 mx-auto" />
-        </LongPressButton>
-
-        {/*Peers count*/}
-        <div className="bg-green-300/60 dark:bg-green-800/30 text-green-500 px-3 py-1 rounded-lg flex flex-row gap-1.5 items-center">
-          <ShareIcon className="size-4" />
-          <AnimateNumber className="font-semibold text-sm">
-            {peersCount}
-          </AnimateNumber>
-        </div>
+        <StatsButtons
+          historyLength={clipboardHistory.length}
+          peersCount={peersCount}
+          purgeHistory={purgeHistory}
+        />
       </div>
     </div>
   );
