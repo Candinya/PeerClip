@@ -77,7 +77,7 @@ jobs:
         run: |
           mkdir compress
           cd artifacts
-          ls | xargs -I {} sh -c "cd {}; zip -r ../../compress/PeerClip-{}.zip *"
+          ls | xargs -I {} sh -c "cd {}; zip -r ../../compress/PeerClip-${{ github.ref_name }}-{}.zip *"
 
       - name: Create release (draft)
         uses: softprops/action-gh-release@v2
