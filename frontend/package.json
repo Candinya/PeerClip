@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.0.7",
     "jotai": "^2.12.1",
+    "motion": "^12.4.7",
     "motion-number": "^1.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

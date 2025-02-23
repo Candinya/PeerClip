@@ -6,17 +6,17 @@ import {
 import { AnimateNumber } from "motion-number";
 import LongPressButton from "./LongPressButton";
 
-interface StatsButtonsProps {
+interface ControlBarProps {
   historyLength: number;
   peersCount: number;
   purgeHistory: () => void;
 }
 
-const StatsButtons = ({
+const ControlBar = ({
   historyLength,
   peersCount,
   purgeHistory,
-}: StatsButtonsProps) => (
+}: ControlBarProps) => (
   <>
     {/*History count*/}
     <div className="bg-amber-300/60 dark:bg-amber-800/30 text-amber-500 px-3 py-1 rounded-lg flex flex-row gap-1.5 items-center">
@@ -31,7 +31,7 @@ const StatsButtons = ({
       onTrigger={purgeHistory}
       time={2_000}
       basicClassName={
-        "bg-red-300/60 dark:bg-red-800/30 hover:bg-red-300/75 dark:hover:bg-red-800/45 text-red-500"
+        "grow bg-red-300/60 dark:bg-red-800/30 hover:bg-red-300/75 dark:hover:bg-red-800/45 text-red-500"
       }
       progressClassName={"bg-red-500"}
     >
@@ -48,4 +48,4 @@ const StatsButtons = ({
   </>
 );
 
-export default StatsButtons;
+export default ControlBar;
