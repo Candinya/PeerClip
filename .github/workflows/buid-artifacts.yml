@@ -52,20 +52,8 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-binaries-${{ matrix.platform }}
+          name: ${{ matrix.platform }}
           path: build/bin/*
-
-      - name: Create release compress
-        # if: startsWith(github.event.ref, 'refs/tags/')
-        run: |
-          zip -r compress/PeerClip-${{ matrix.platform }}.zip build/bin/
-
-      - name: Upload release compress
-        # if: startsWith(github.event.ref, 'refs/tags/')
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-compress-${{ matrix.platform }}
-          path: compress/*
 
   release:
     # if: startsWith(github.event.ref, 'refs/tags/')
@@ -82,10 +70,12 @@ jobs:
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
-        with:
-          pattern: release-compress-*
-          path: artifacts/
-          merge-multiple: true
+      
+      - name: Compress artifacts # TODO: find a better way
+        run: |
+          mkdir compress
+          zip -r compress/PeerClip-windows.zip ./windows/PeerClip.exe 
+          zip -r compress/PeerClip-macos.zip ./macos/PeerClip.app
       
       - name: List files # For debug only
         run: |
@@ -99,6 +89,6 @@ jobs:
       #     generate_release_notes: true
       #     draft: true
       #     files: |
-      #       artifacts/*
+      #       compress/*
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
