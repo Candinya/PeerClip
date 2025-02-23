@@ -56,7 +56,7 @@ jobs:
           path: build/bin/*
 
   release:
-    # if: startsWith(github.event.ref, 'refs/tags/')
+    if: startsWith(github.event.ref, 'refs/tags/')
 
     needs: 
       - "build"
@@ -78,19 +78,15 @@ jobs:
           mkdir compress
           cd artifacts
           ls | xargs -I {} sh -c "cd {}; zip -r ../../compress/PeerClip-{}.zip *"
-      
-      - name: List files # For debug only
-        run: |
-          find . -type f -exec echo {} \;
 
-      # - name: Create release (draft)
-      #   uses: softprops/action-gh-release@v2
-      #   with:
-      #     name: PeerClip - ${{ github.ref }}
-      #     tag_name: ${{ github.ref }}
-      #     generate_release_notes: true
-      #     draft: true
-      #     files: |
-      #       compress/*
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      - name: Create release (draft)
+        uses: softprops/action-gh-release@v2
+        with:
+          name: PeerClip - ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          generate_release_notes: true
+          draft: true
+          files: |
+            compress/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
