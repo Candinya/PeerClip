@@ -47,16 +47,16 @@ jobs:
 
       - name: Build Wails app
         run: |
-          wails build -o PeerClip-${{ matrix.platform }}
+          wails build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: binaries-${{ matrix.platform }}
+          name: ${{ matrix.platform }}
           path: build/bin/*
 
   release:
-    if: startsWith(github.event.ref, 'refs/tags/')
+    # if: startsWith(github.event.ref, 'refs/tags/')
 
     needs: 
       - "build"
@@ -68,11 +68,14 @@ jobs:
 
     steps:
 
-      - name: Merge artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts/
-          merge-multiple: true
+      
+      - name: List artifacts # For debug only
+        run: |
+          find . -type f -exec echo {} \;
 
       - name: Create release (draft)
         uses: softprops/action-gh-release@v2
@@ -85,3 +88,20 @@ jobs:
             artifacts/*
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      
+      - name: Merge artifacts # TODO: find a better way
+        run: |
+          mv artifacts/windows/PeerClip.exe artifacts/PeerClip-windows.exe
+          mv artifacts/macos/PeerClip artifacts/PeerClip-macos
+
+      # - name: Create release (draft)
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     name: PeerClip - ${{ github.ref }}
+      #     tag_name: ${{ github.ref }}
+      #     generate_release_notes: true
+      #     draft: true
+      #     files: |
+      #       artifacts/*
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
