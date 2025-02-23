@@ -9,27 +9,8 @@ on:
     branches: [ master ]
 
 jobs:
-  prepare-release:
-    if: startsWith(github.event.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      id-token: write
-
-    steps:
-      - name: Create release (draft)
-        uses: softprops/action-gh-release@v2
-        with:
-          name: PeerClip - ${{ github.ref }}
-          tag_name: ${{ github.ref }}
-          generate_release_notes: true
-          draft: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
   build:
-    needs: 
-      - "prepare-release"
 
     strategy:
       matrix:
@@ -74,7 +55,7 @@ jobs:
           name: binaries-${{ matrix.platform }}
           path: build/bin/*
 
-  update-release:
+  release:
     if: startsWith(github.event.ref, 'refs/tags/')
 
     needs: 
@@ -86,15 +67,21 @@ jobs:
       id-token: write
 
     steps:
+
       - name: Merge artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts/
           merge-multiple: true
 
-      - name: Append artifacts to release
-        if: startsWith(github.event.ref, 'refs/tags/')
+      - name: Create release (draft)
         uses: softprops/action-gh-release@v2
         with:
+          name: PeerClip - ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          generate_release_notes: true
+          draft: true
           files: |
             artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
