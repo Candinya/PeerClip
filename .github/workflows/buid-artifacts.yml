@@ -70,29 +70,16 @@ jobs:
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
-        with:
-          path: artifacts/
       
-      - name: List artifacts # For debug only
+      - name: Compress artifacts # TODO: find a better way
+        run: |
+          mkdir compress
+          zip -r compress/PeerClip-windows.zip ./windows/PeerClip.exe 
+          zip -r compress/PeerClip-macos.zip ./macos/PeerClip.app
+      
+      - name: List files # For debug only
         run: |
           find . -type f -exec echo {} \;
-
-      - name: Create release (draft)
-        uses: softprops/action-gh-release@v2
-        with:
-          name: PeerClip - ${{ github.ref }}
-          tag_name: ${{ github.ref }}
-          generate_release_notes: true
-          draft: true
-          files: |
-            artifacts/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      
-      - name: Merge artifacts # TODO: find a better way
-        run: |
-          mv artifacts/windows/PeerClip.exe artifacts/PeerClip-windows.exe
-          mv artifacts/macos/PeerClip artifacts/PeerClip-macos
 
       # - name: Create release (draft)
       #   uses: softprops/action-gh-release@v2
@@ -102,6 +89,6 @@ jobs:
       #     generate_release_notes: true
       #     draft: true
       #     files: |
-      #       artifacts/*
+      #       compress/*
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
