@@ -2,8 +2,6 @@ import type { ClipboardHistory } from "../../atoms/clipboardHistory";
 import { useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import LongPressButton from "../LongPressButton";
-import { ShieldCheckIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Draggable } from "@hello-pangea/dnd";
 import PinnedMark from "./PinnedMark";
 import ContextMenu from "./ContextMenu";
@@ -87,15 +85,15 @@ const HistoryCard = ({
                 {h.content}
               </p>
 
-              {/*PinnedMark*/}
-              <AnimatePresence>{h.isPinned && <PinnedMark />}</AnimatePresence>
-
               {/*ContextMenu*/}
               <AnimatePresence>
                 {isContextMenuOpen && (
                   <ContextMenu h={h} setPinned={setPinned} del={del} />
                 )}
               </AnimatePresence>
+
+              {/*PinnedMark*/}
+              <AnimatePresence>{h.isPinned && <PinnedMark />}</AnimatePresence>
             </div>
           </motion.div>
         </li>
