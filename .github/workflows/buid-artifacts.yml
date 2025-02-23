@@ -47,12 +47,12 @@ jobs:
 
       - name: Build Wails app
         run: |
-          wails build -o PeerClip-${{ matrix.platform }}
+          wails build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: binaries-${{ matrix.platform }}
+          name: ${{ matrix.platform }}
           path: build/bin/*
 
   release:
@@ -68,11 +68,16 @@ jobs:
 
     steps:
 
-      - name: Merge artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts/
-          merge-multiple: true
+      
+      - name: Compress artifacts
+        run: |
+          mkdir compress
+          cd artifacts
+          ls | xargs -I {} sh -c "cd {}; zip -r ../../compress/PeerClip-{}.zip *"
 
       - name: Create release (draft)
         uses: softprops/action-gh-release@v2
@@ -82,6 +87,6 @@ jobs:
           generate_release_notes: true
           draft: true
           files: |
-            artifacts/*
+            compress/*
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
