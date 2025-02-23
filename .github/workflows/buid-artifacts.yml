@@ -28,6 +28,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
   build:
+    needs: 
+      - "prepare-release"
+
     strategy:
       matrix:
         platform: [windows, macos]
@@ -68,6 +71,10 @@ jobs:
 
   update-release:
     if: startsWith(github.event.ref, 'refs/tags/')
+
+    needs: 
+      - "build"
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
