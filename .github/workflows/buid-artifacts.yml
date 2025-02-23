@@ -82,10 +82,10 @@ jobs:
       - name: Create release (draft)
         uses: softprops/action-gh-release@v2
         with:
-          name: PeerClip - ${{ github.ref }}
-          tag_name: ${{ github.ref }}
+          name: PeerClip - ${{ github.ref_name }}
           generate_release_notes: true
           draft: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
           files: |
             compress/*
         env:
