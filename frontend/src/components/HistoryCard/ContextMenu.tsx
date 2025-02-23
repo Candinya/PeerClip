@@ -21,7 +21,7 @@ const ContextMenu = ({ h, isActive, setPinned, del }: ContextMenuProps) => (
   >
     <div className="w-full flex flex-row gap-4 justify-center">
       {/*Pin*/}
-      <motion.button
+      <motion.div
         className={`${
           h.isPinned
             ? "bg-green-500 hover:bg-green-500/75 text-white dark:text-black"
@@ -31,7 +31,7 @@ const ContextMenu = ({ h, isActive, setPinned, del }: ContextMenuProps) => (
         layoutId={`history-card-${h.hash}-context-pin-button`}
       >
         <ShieldCheckIcon className="size-5 mx-auto" />
-      </motion.button>
+      </motion.div>
 
       {/*Delete*/}
       {!h.isPinned && !isActive && (
