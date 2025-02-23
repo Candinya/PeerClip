@@ -70,12 +70,14 @@ jobs:
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
       
-      - name: Compress artifacts # TODO: find a better way
+      - name: Compress artifacts
         run: |
           mkdir compress
-          zip -r compress/PeerClip-windows.zip ./windows/PeerClip.exe 
-          zip -r compress/PeerClip-macos.zip ./macos/PeerClip.app
+          cd artifacts
+          ls | xargs -I {} sh -c "cd {}; zip -r ../../compress/PeerClip-{}.zip *"
       
       - name: List files # For debug only
         run: |
