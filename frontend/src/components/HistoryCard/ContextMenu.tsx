@@ -5,10 +5,11 @@ import type { ClipboardHistory } from "../../atoms/clipboardHistory";
 
 interface ContextMenuProps {
   h: ClipboardHistory;
+  isActive: boolean;
   setPinned: (state: boolean) => void;
   del: () => void;
 }
-const ContextMenu = ({ h, setPinned, del }: ContextMenuProps) => (
+const ContextMenu = ({ h, isActive, setPinned, del }: ContextMenuProps) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -33,7 +34,7 @@ const ContextMenu = ({ h, setPinned, del }: ContextMenuProps) => (
       </motion.button>
 
       {/*Delete*/}
-      {!h.isPinned && (
+      {!h.isPinned && !isActive && (
         <motion.div
           initial={{
             opacity: 0,

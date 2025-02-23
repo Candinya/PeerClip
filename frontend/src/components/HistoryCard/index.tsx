@@ -88,7 +88,12 @@ const HistoryCard = ({
               {/*ContextMenu*/}
               <AnimatePresence>
                 {isContextMenuOpen && (
-                  <ContextMenu h={h} setPinned={setPinned} del={del} />
+                  <ContextMenu
+                    h={h}
+                    isActive={isActive}
+                    setPinned={setPinned}
+                    del={del}
+                  />
                 )}
               </AnimatePresence>
 
