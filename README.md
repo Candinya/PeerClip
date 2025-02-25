@@ -25,7 +25,7 @@
 ![基本界面](https://candymade.net/assets/screenshots/peerclip/main.png)
 ![深色模式](https://candymade.net/assets/screenshots/peerclip/dark.png)
 
-程序的主体部分是剪贴板区域（初次打开时为空），底部为状态与控制栏，从左到右分别为 **条目计数** **全部删除** **Peers 计数** ，对应含义分别如下：
+程序的主体部分是剪贴板区域（初次打开时为默认信息），底部为状态与控制栏，从左到右分别为 **条目计数** **全部删除** **Peers 计数** ，对应含义分别如下：
 
 ![状态与控制栏](https://candymade.net/assets/screenshots/peerclip/control-bar.png)
 
