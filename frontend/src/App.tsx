@@ -3,7 +3,10 @@ import { useAtom } from "jotai";
 import { useAtomCallback } from "jotai/utils";
 import { EventsOn, EventsOff } from "../wailsjs/runtime";
 
-import { clipboardHistoryAtom } from "./atoms/clipboardHistory";
+import {
+  ClipboardContentFormatMap,
+  clipboardHistoryAtom,
+} from "./atoms/clipboardHistory";
 import HistoryList from "./components/HistoryList";
 import ControlBar from "./components/ControlBar";
 
@@ -19,23 +22,26 @@ function App() {
   );
 
   useEffect(() => {
-    EventsOn("clipboard-change", (hash: string, content: string) => {
-      const currentHistory = getCurrentHistory();
-      // Check if need to append to history array
-      if (!currentHistory.some((h) => h.hash === hash)) {
-        setClipboardHistory([
-          {
-            type: "text",
-            hash,
-            content,
-            isPinned: false,
-          },
-          ...currentHistory,
-        ]);
-      }
-      // Set active hash anyway
-      setCurrentActiveHash(hash);
-    });
+    EventsOn(
+      "clipboard-change",
+      (format: number, hash: string, content: string) => {
+        const currentHistory = getCurrentHistory();
+        // Check if need to append to history array
+        if (!currentHistory.some((h) => h.hash === hash)) {
+          setClipboardHistory([
+            {
+              format: ClipboardContentFormatMap[format],
+              hash,
+              content,
+              isPinned: false,
+            },
+            ...currentHistory,
+          ]);
+        }
+        // Set active hash anyway
+        setCurrentActiveHash(hash);
+      },
+    );
 
     EventsOn("peers-count", (count: number) => {
       setPeersCount(count);

@@ -30,13 +30,10 @@ func (a *App) startupWithCfg(cfg *config) func(ctx context.Context) {
 		}
 
 		// Watch clipboard change event to push to frontend
-		go emitClipboardChangeEvent(ctx)
+		go watchClipboardChangeEvent(ctx, clipboard.FmtText)
+		go watchClipboardChangeEvent(ctx, clipboard.FmtImage)
 
 		// Prepare libp2p
 		initLibP2P(ctx, cfg)
 	}
-}
-
-func (a *App) SetClipboard(text string) {
-	clipboard.Write(clipboard.FmtText, []byte(text))
 }

@@ -1,5 +1,6 @@
 import HistoryCard from "./HistoryCard";
 import {
+  ClipboardContentFormatReverseMap,
   ClipboardHistory,
   clipboardHistoryAtom,
 } from "../atoms/clipboardHistory";
@@ -16,7 +17,10 @@ const HistoryList = ({ currentActiveHash }: HistoryListProps) => {
 
   const setActive = (history: ClipboardHistory) => {
     if (history.hash !== currentActiveHash) {
-      SetClipboard(history.content);
+      SetClipboard(
+        ClipboardContentFormatReverseMap[history.format],
+        history.content,
+      );
     }
   };
 

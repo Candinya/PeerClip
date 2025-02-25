@@ -81,9 +81,19 @@ const HistoryCard = ({
               className={`ring-3 ${isActive ? "ring-blue-400 dark:ring-blue-600" : "ring-gray-300 dark:ring-gray-700 hover:ring-blue-300/75 dark:hover:ring-blue-700/65"} bg-gray-200/75 hover:bg-gray-200/60 dark:bg-gray-800 dark:hover:bg-gray-700/50 duration-200 cursor-pointer px-4 py-3 rounded-lg shadow-md hover:shadow-lg min-h-16 relative`}
             >
               {/*Content*/}
-              <p className="whitespace-pre overflow-ellipsis overflow-x-hidden line-clamp-8 md:line-clamp-12 xl:line-clamp-none">
-                {h.content}
-              </p>
+              {h.format === "text" ? (
+                <p className="whitespace-pre overflow-ellipsis overflow-x-hidden line-clamp-8 md:line-clamp-12 xl:line-clamp-none xl:overflow-x-hidden">
+                  {h.content}
+                </p>
+              ) : h.format === "image" ? (
+                <img
+                  src={`data:image/png;base64,${h.content}`}
+                  alt={h.hash}
+                  className="max-h-48 md:max-h-72 xl:max-h-none"
+                />
+              ) : (
+                "Unsupported"
+              )}
 
               {/*ContextMenu*/}
               <AnimatePresence>
