@@ -45,7 +45,7 @@ func initLibP2P(ctx context.Context, cfg *config) {
 		// 'stream' will stay open until you close it (or the other side closes it).
 	})
 
-	peerChan := initMDNS(h, cfg.rendezvousString)
+	peerChan := initMDNS(ctx, h, cfg.rendezvousString)
 
 	// Start join nodes
 	go func() {

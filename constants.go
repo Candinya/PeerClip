@@ -3,8 +3,8 @@ package main
 import "time"
 
 const (
-	DefaultRendezvousString  = "clipboard"
-	DefaultProtocolID        = "/peerclip/v1"
+	DefaultRendezvousString  = "peerclip"
+	DefaultProtocolID        = "/peerclip/0.2"
 	MessageDelim             = '\n'
 	HeaderEncodingBase       = 36
 	PeersCountUpdateInterval = time.Second * 5
