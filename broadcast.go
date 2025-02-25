@@ -56,8 +56,10 @@ func setClipboardFromRemote(ctx context.Context, r io.Reader) {
 			break
 		}
 
+		runtime.LogDebugf(ctx, "payload decoded: (%d) %s", payload.Format, payload.Content)
+
 		currentBytes := clipboard.Read(payload.Format)
-		if n != len(currentBytes) || !bytes.Equal(currentBytes, payload.Content) {
+		if len(currentBytes) != len(payload.Content) || !bytes.Equal(currentBytes, payload.Content) {
 			runtime.LogDebugf(ctx, "clipboard data is different, updating")
 			// Only update when is different
 			clipboard.Write(payload.Format, payload.Content)
